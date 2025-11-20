@@ -4,9 +4,7 @@ from datetime import datetime
 
 import pandas as pd
 
-# ============================================================
-# PATHS
-# ============================================================
+# Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(BASE_DIR, "..", "data")
 
@@ -14,10 +12,6 @@ INPUT_FILE = os.path.join(DATA_DIR, "listings.csv")
 OUTPUT_FILE = os.path.join(DATA_DIR, "listings_clean.csv")
 REJECT_FILE = os.path.join(DATA_DIR, "listings_rejects.csv")
 
-
-# ============================================================
-# REQUIRED COLUMNS
-# ============================================================
 required_columns = [
     "id",
     "name",
@@ -40,9 +34,7 @@ required_columns = [
 ]
 
 
-# ============================================================
-# 1. READER LAYER
-# ============================================================
+# Read the file
 def read_data(csv_path=INPUT_FILE):
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"Input file not found: {csv_path}")
@@ -52,9 +44,7 @@ def read_data(csv_path=INPUT_FILE):
     return df
 
 
-# ============================================================
-# 2. VALIDATOR LAYER
-# ============================================================
+# Validate: Make sure that the required columns exist
 def validate_columns(df):
     missing = [c for c in required_columns if c not in df.columns]
     if missing:
@@ -62,9 +52,7 @@ def validate_columns(df):
     return df
 
 
-# ============================================================
-# 3. COLUMN CLEANING FUNCTIONS (ONE PER COLUMN)
-# ============================================================
+# Cleaming each column
 
 
 # ---- ID Fields ----
@@ -149,9 +137,7 @@ def clean_last_review(col):
     return pd.to_datetime(col, errors="coerce")
 
 
-# ============================================================
-# 4. CLEANER LAYER (APPLIES ALL COLUMN CLEANERS)
-# ============================================================
+# Use cleaning functions
 def clean_data(df):
     cleaners = {
         "id": clean_listing_id,
@@ -174,16 +160,13 @@ def clean_data(df):
         "license": clean_license,
     }
 
-    # Apply each column cleaner
     for col, cleaner_fn in cleaners.items():
         df[col] = cleaner_fn(df[col])
 
     return df
 
 
-# ============================================================
-# 5. HANDLE REJECTIONS (invalid price, invalid IDs)
-# ============================================================
+# Rejects
 def reject_bad_rows(df):
     rejects = []
 
@@ -201,9 +184,7 @@ def reject_bad_rows(df):
     return df_clean, rejects_df
 
 
-# ============================================================
-# 6. WRITE OUTPUT FILES
-# ============================================================
+# Write out
 def write_output(df_clean, df_rejects):
     os.makedirs(DATA_DIR, exist_ok=True)
 
@@ -211,9 +192,7 @@ def write_output(df_clean, df_rejects):
     df_rejects.to_csv(REJECT_FILE, index=False)
 
 
-# ============================================================
-# 7. INGESTION PIPELINE WRAPPER
-# ============================================================
+# function to do
 def ingest_listings():
     print("Starting Airbnb listings ingestion…")
     start = time.time()
@@ -239,8 +218,6 @@ def ingest_listings():
     return df_clean, df_rejects
 
 
-# ============================================================
-# Run if executed directly
-# ============================================================
+# run
 if __name__ == "__main__":
     ingest_listings()
