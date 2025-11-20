@@ -34,8 +34,10 @@ required_columns = [
 ]
 
 
-# Read the file
 def read_data(csv_path=INPUT_FILE):
+    """
+    Read the data in the CSV
+    """
     if not os.path.exists(csv_path):
         raise FileNotFoundError(f"Input file not found: {csv_path}")
 
@@ -44,8 +46,10 @@ def read_data(csv_path=INPUT_FILE):
     return df
 
 
-# Validate: Make sure that the required columns exist
 def validate_columns(df):
+    """
+    Makes sure that all the columns exist
+    """
     missing = [c for c in required_columns if c not in df.columns]
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
@@ -54,51 +58,140 @@ def validate_columns(df):
 
 # Cleaming each column
 
+# INTS
 
-# ---- ID Fields ----
+
 def clean_listing_id(col):
+    """
+    Clean the 'id' column for listings.
+
+    This function attempts to convert all values in the column to numeric
+    listing IDs. Non-numeric or invalid values (e.g., strings, symbols,
+    empty values) are coerced into <NA>.
+    """
     return pd.to_numeric(col, errors="coerce").astype("Int64")
 
 
 def clean_host_id(col):
+    """
+    Clean the 'host_id' column for listings.
+
+    This function attempts to convert all values in the column to numeric
+    listing IDs. Non-numeric or invalid values (e.g., strings, symbols,
+    empty values) are coerced into <NA>.
+    """
     return pd.to_numeric(col, errors="coerce").astype("Int64")
 
 
-# ---- Strings ----
+# STRINGS
 def clean_name(col):
+    """
+    Clean the 'name' column for listings.
+
+    This function fills missing values with the placeholder string
+    "Unknown", converts all values to strings, and strips leading
+    and trailing whitespace. It does not perform any validation
+    beyond basic normalization.
+
+    """
     return col.fillna("Unknown").astype(str).str.strip()
 
 
 def clean_host_name(col):
+    """
+    Clean the 'host_name' column for listings.
+
+    This function fills missing values with the placeholder string
+    "Unknown", converts all values to strings, and strips leading
+    and trailing whitespace. It does not perform any validation
+    beyond basic normalization.
+
+    """
     return col.fillna("Unknown").astype(str).str.strip()
 
 
 def clean_room_type(col):
+    """
+    Clean the 'room_type' column for listings.
+
+    This function fills missing values with the placeholder string
+    "Unknown", converts all values to strings, and strips leading
+    and trailing whitespace. It does not perform any validation
+    beyond basic normalization.
+
+    """
     return col.fillna("Unknown").astype(str).str.strip()
 
 
 def clean_neighbourhood_group(col):
+    """
+    Clean the 'neighbourhood_group' column for listings.
+
+    This function fills missing values with the placeholder string
+    "Unknown", converts all values to strings, and strips leading
+    and trailing whitespace. It does not perform any validation
+    beyond basic normalization.
+
+    """
     return col.fillna("Unknown").astype(str).str.strip()
 
 
 def clean_neighbourhood(col):
+    """
+    Clean the 'neighbourhood' column for listings.
+
+    This function fills missing values with the placeholder string
+    "Unknown", converts all values to strings, and strips leading
+    and trailing whitespace. It does not perform any validation
+    beyond basic normalization.
+
+    """
     return col.fillna("Unknown").astype(str).str.strip()
 
 
 def clean_license(col):
+    """
+    Clean the 'license' column for listings.
+
+    This function replaces missing license values with the placeholder
+    string "Not available", converts all entries to strings, and strips
+    leading and trailing whitespace. Since license information may be
+    legitimately missing or inconsistently formatted, this function does
+    not attempt to validate the content of the license beyond ensuring
+    it is a clean, string-typed field.
+    """
     return col.fillna("Not available").astype(str).str.strip()
 
 
-# ---- Coordinates ----
+# COORDS
 def clean_latitude(col):
+    """
+    Clean the 'latitude' column for listings.
+
+    This function attempts to convert all values in the latitude column
+    into numeric form. Any non-numeric, malformed, or missing values are
+    coerced into NaN. No additional validation (e.g., range checking for
+    valid latitude coordinates) is performed here, keeping this function
+    focused solely on numeric conversion.
+    """
+
     return pd.to_numeric(col, errors="coerce")
 
 
 def clean_longitude(col):
+    """
+    Clean the 'longitude' column for listings.
+
+    This function converts all values in the longitude column into
+    numeric form, coercing invalid or unparseable values into NaN using
+    `errors="coerce"`. Geographic validation (e.g., ensuring longitude is
+    between -180 and 180) is intentionally not performed here; the goal
+    is strictly to normalize the data type.
+    """
     return pd.to_numeric(col, errors="coerce")
 
 
-# ---- Numeric Monies ----
+# INT MONEY
 def clean_price(col):
     cleaned = (
         col.astype(str)
