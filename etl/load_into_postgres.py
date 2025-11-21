@@ -1,10 +1,6 @@
 import psycopg
 
 def get_connection():
-    """
-    Create a psycopg3 connection to the database.
-    Update credentials as necessary.
-    """
     return psycopg.connect(
         host="localhost",
         dbname="airbnb",
@@ -18,11 +14,10 @@ def get_connection():
 
 def drop_tables():
     conn = get_connection()
-    cur = conn.cursor()  # type: ignore[attr-defined]
+    cur = conn.cursor() 
 
     print("Dropping existing tables (if they exist)...")
 
-    # Drop in the correct dependency order:
     cur.execute("DROP TABLE IF EXISTS listings CASCADE;")
     cur.execute("DROP TABLE IF EXISTS hosts CASCADE;")
     cur.execute("DROP TABLE IF EXISTS locations CASCADE;")
@@ -38,7 +33,7 @@ def drop_tables():
 
 def create_tables():
     conn = get_connection()
-    cur = conn.cursor()  # type: ignore[attr-defined]
+    cur = conn.cursor()
 
     print("Creating normalized tables...")
 
@@ -97,10 +92,6 @@ def create_tables():
 
     print("Tables created successfully!\n")
 
-
-# ---------------------------------------------------------------
-# MAIN RUNNER (DEMO-FRIENDLY)
-# ---------------------------------------------------------------
 
 if __name__ == "__main__":
     print("\n==============================")
