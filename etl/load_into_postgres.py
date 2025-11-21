@@ -40,7 +40,7 @@ def create_tables():
     conn = get_connection()
     cur = conn.cursor()  # type: ignore[attr-defined]
 
-    print("🛠️ Creating normalized tables...")
+    print("Creating normalized tables...")
 
     # HOSTS
     cur.execute("""
